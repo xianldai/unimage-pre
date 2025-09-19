@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "lcwkmod",
+	"version": "${version}",
+	"name": "LcwkMod",
+	"description": "落草为寇！",
+	"authors": [
+		"xianaldai,ethapyream"
+	],
+	"contact": {
+		"homepage": "https://xianaldai.cn/",
+		"sources": "https://github.com/xianaldai/lcwkmod"
+	},
+	"license": "All Rights Reserved",
+	"icon": "assets/lcwkmod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"cn.xianaldai.LcwkMod"
+		],
+		"client": [
+
+		],
+		"fabric-datagen": [
+
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.8",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
