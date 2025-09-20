@@ -6,31 +6,39 @@ import net.minecraft.item.ItemGroups;
 
 import static net.minecraft.datafixer.fix.EntityRavagerRenameFix.ITEMS;
 import cn.xianaldai.item.ModItems;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class LcwkMod implements ModInitializer {
     public static final String MOD_ID = "lcwkmod";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
     @Override
     public void onInitialize() {
-        registerItems();
-        //其实最好的办法是常量一起注册
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register(entries -> entries.add(ModItems.JIANYINGSHIJIAN));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register(entries -> entries.add(ModItems.SHITOUTOUKUI));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register(entries -> entries.add(ModItems.SHITOUXIONGJIA));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register(entries -> entries.add(ModItems.SHITOUHUTUI));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register(entries -> entries.add(ModItems.SHITOUXUEZI));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register(entries -> entries.add(ModItems.JIXINGXUE));
-
-
-    }
-
-    private void registerItems() {
+        // 初始化物品注册
         ModItems.initialize();
+
+        // 物品组注册：合并为一个事件处理器
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
+                .register(entries -> {
+                    // 工具类物品
+                    entries.add(ModItems.JIANYINGSHIJIAN);
+
+                    //  armor类物品
+                    entries.add(ModItems.SHITOUTOUKUI);
+                    entries.add(ModItems.SHITOUXIONGJIA);
+                    entries.add(ModItems.SHITOUHUTUI);
+                    entries.add(ModItems.SHITOUXUEZI);
+                    entries.add(ModItems.JIXINGXUE);
+                    entries.add(ModItems.YIHUAJIXINGXUE);
+
+                    // 食物类物品
+                    entries.add(ModItems.CHONGJIBINGGAN);
+                    entries.add(ModItems.TIANCAIAIHAOZHE_ZAISHENG);
+                });
+
+        LOGGER.info("LcwkMod 初始化完成！");
     }
 
 }

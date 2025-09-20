@@ -1,5 +1,6 @@
 package cn.xianaldai.component;
 
+import com.microsoft.aad.msal4j.PublicClientApplication;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.ConsumableComponents;
 import net.minecraft.component.type.FoodComponent;
@@ -16,6 +17,11 @@ public class ModComponents {
     public static final FoodComponent CHONGJIBINGGAN_COMPONENT = new FoodComponent.Builder()
             .alwaysEdible()  //无论饥饿值多少都可以使用
             .build();
-    //
-    //
+    // 甜菜爱好者-再生buff组件
+    public static final ConsumableComponent TIANCAIAIHAOZHE_ZAISHENG_CONSUMABLE_COMPONENT = ConsumableComponents.food()
+            .consumeEffect(new ApplyEffectsConsumeEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 6 * 20, 0), 1.0f))
+            .build();
+    public static final FoodComponent TIANCAIAIHAOZHE_COMPONENT = new FoodComponent.Builder()
+            .alwaysEdible()
+            .build();
 }
