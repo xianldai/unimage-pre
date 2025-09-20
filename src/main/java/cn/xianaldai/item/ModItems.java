@@ -17,7 +17,10 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
+import net.minecraft.component.type.LoreComponent;
 
 
 import java.util.List;
@@ -108,7 +111,7 @@ public class ModItems {
         // 异化极形靴
         YIHUAJIXINGXUE = register(
                 "yihuajixingxue",
-                YihuaJixingxueItem::new,  // 关联专属物品类
+                Item::new,
                 new Item.Settings()
                         .armor(IRON, EquipmentType.BOOTS)
                         .maxDamage(EquipmentType.BOOTS.getMaxDamage(JixingxueArmorMaterial.BASE_DURABILITY))
@@ -118,15 +121,23 @@ public class ModItems {
         CHONGJIBINGGAN = register(
                 "chongjibinggan",
                 Item::new,
-                new Item.Settings().food(CHONGJIBINGGAN_COMPONENT, CHONGJIBINGGAN_FOOD_CONSUMABLE_COMPONENT)
+                new Item.Settings()
+                        .food(CHONGJIBINGGAN_COMPONENT, CHONGJIBINGGAN_FOOD_CONSUMABLE_COMPONENT)
         );
 
         //甜菜爱好者-再生
         TIANCAIAIHAOZHE_ZAISHENG = register(
                 "tiancaiaihaozhe_zaisheng",
                 Item::new,
-                new Item.Settings().food(TIANCAIAIHAOZHE_COMPONENT,TIANCAIAIHAOZHE_ZAISHENG_CONSUMABLE_COMPONENT)
+                new Item.Settings()
+                        .food(TIANCAIAIHAOZHE_COMPONENT,TIANCAIAIHAOZHE_ZAISHENG_CONSUMABLE_COMPONENT)
+                        .component(DataComponentTypes.LORE, new LoreComponent(
+                                List.of(
+                                        Text.literal("虽然不如生命之泉那么厉害").formatted(Formatting.WHITE),
+                                        Text.literal("但至少它可以堆叠").formatted(Formatting.WHITE),
+                                        Text.literal("这就使它显得非常特别").formatted(Formatting.WHITE)
+                                )
+                        ))
         );
-
     }
 }
