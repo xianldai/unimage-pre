@@ -12,7 +12,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryOwner;
 import net.minecraft.util.Identifier;
 
-// 自带附魔的异化极形靴实现
+// 自带附魔的异化极形靴实现（修复注册表所有者判断）
 public class YihuaJixingxueItem extends Item {
     // 附魔标识符
     private static final Identifier UNBREAKING_ID = Identifier.of("minecraft", "unbreaking");
@@ -24,6 +24,9 @@ public class YihuaJixingxueItem extends Item {
     private static final int PROTECTION_LEVEL = 2;
     private static final int FEATHER_FALLING_LEVEL = 2;
 
+    // 附魔注册表所有者（单例模式确保一致性）
+    private static final EnchantmentRegistryOwner ENCHANTMENT_OWNER = new EnchantmentRegistryOwner();
+
     public YihuaJixingxueItem(Settings settings) {
         super(settings);
     }
@@ -32,32 +35,45 @@ public class YihuaJixingxueItem extends Item {
     public ItemStack getDefaultStack() {
         ItemStack stack = super.getDefaultStack();
 
-        // 直接构建附魔组件
+        // 1. 获取现有附魔组件
         ComponentType<ItemEnchantmentsComponent> enchantmentType = DataComponentTypes.ENCHANTMENTS;
-        ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(ItemEnchantmentsComponent.DEFAULT);
+        ItemEnchantmentsComponent existing = stack.getOrDefault(enchantmentType, ItemEnchantmentsComponent.DEFAULT);
 
-        // 添加附魔
-        builder.add(createEnchantmentEntry(UNBREAKING_ID), UNBREAKING_LEVEL);
-        builder.add(createEnchantmentEntry(PROTECTION_ID), PROTECTION_LEVEL);
-        builder.add(createEnchantmentEntry(FEATHER_FALLING_ID), FEATHER_FALLING_LEVEL);
+        // 2. 构建新的附魔组件
+        ItemEnchantmentsComponent.Builder builder = new ItemEnchantmentsComponent.Builder(existing);
 
+        // 3. 添加附魔
+        addEnchantment(builder, UNBREAKING_ID, UNBREAKING_LEVEL);
+        addEnchantment(builder, PROTECTION_ID, PROTECTION_LEVEL);
+        addEnchantment(builder, FEATHER_FALLING_ID, FEATHER_FALLING_LEVEL);
+
+        // 4. 设置组件
         stack.set(enchantmentType, builder.build());
+
         return stack;
     }
 
-    // 创建附魔引用条目（使用静态方法）
-    private RegistryEntry<Enchantment> createEnchantmentEntry(Identifier id) {
-        // 创建附魔的注册表键
-        RegistryKey<Enchantment> key = RegistryKey.of(RegistryKeys.ENCHANTMENT, id);
-
-        // 使用standAlone方法创建引用条目，传入所有者和键
-        return RegistryEntry.Reference.standAlone(new EnchantmentRegistryOwner(), key);
+    private void addEnchantment(ItemEnchantmentsComponent.Builder builder, Identifier id, int level) {
+        RegistryEntry<Enchantment> entry = createEnchantmentEntry(id);
+        if (entry != null && level > 0 && level <= Enchantment.MAX_LEVEL) {
+            builder.add(entry, level);
+        }
     }
 
-    // 附魔注册表所有者
+    private RegistryEntry<Enchantment> createEnchantmentEntry(Identifier id) {
+        try {
+            RegistryKey<Enchantment> key = RegistryKey.of(RegistryKeys.ENCHANTMENT, id);
+            return RegistryEntry.Reference.standAlone(ENCHANTMENT_OWNER, key);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // 修正注册表所有者实现
     private static class EnchantmentRegistryOwner implements RegistryEntryOwner<Enchantment> {
         @Override
         public boolean ownerEquals(RegistryEntryOwner<Enchantment> other) {
+            // 仅判断是否为当前实例，避免使用不存在的getOwner()方法
             return other == this;
         }
     }
